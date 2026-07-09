@@ -39,3 +39,4 @@ go.work.sum
 .codex/
 .opencode/
 .cursor/
+.qwen/
