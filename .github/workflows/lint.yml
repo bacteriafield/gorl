@@ -1,28 +1,26 @@
 name: Go Linting
 
 on:
-    push:
-          branches: [ main ]
-              pull_request:
-                    branches: [ main ]
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
-                    jobs:
-                        golangci:
-                              name: Lint Codebase
-                                    runs-on: ubuntu-latest
-                                          steps:
-                                                  - name: Check Out Repository
-                                                            uses: actions/checkout@v4
+jobs:
+  golangci:
+    name: Lint Codebase
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Out Repository
+        uses: actions/checkout@v4
 
-                                                                    - name: Set Up Go
-                                                                              uses: actions/setup-go@v5
-                                                                                        with:
-                                                                                                    go-version-file: 'go.mod'
-                                                                                                                cache: false # The golangci-lint action handles its own caching
+      - name: Set Up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: 'go.mod'
+          cache: false # The golangci-lint action handles its own caching
 
-                                                                                                                        - name: Run golangci-lint
-                                                                                                                                  uses: golangci/golangci-lint-action@v6
-                                                                                                                                            with:
-                                                                                                                                                        # Automatically detects .golangci.yml at the repository root
-                                                                                                                                                        #           version: latest 
-                                                                                                                                                        #
+      - name: Run golangci-lint
+        uses: golangci/golangci-lint-action@v8
+        with:
+          version: v2.12.2
