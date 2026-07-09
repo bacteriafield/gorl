@@ -40,6 +40,6 @@ func (aesgcm) New(key []byte) (cipher.AEAD, error) {
 
 type chacha struct{}
 
-func (chacha) KeySize() int { return chacha20poly1305.KeySize }
-func (chacha) Name() string { return "chacha20-poly1305" }
+func (chacha) KeySize() int                        { return chacha20poly1305.KeySize }
+func (chacha) Name() string                        { return "chacha20-poly1305" }
 func (chacha) New(key []byte) (cipher.AEAD, error) { return chacha20poly1305.New(key) }

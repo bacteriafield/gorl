@@ -40,8 +40,8 @@ func TestEndToEnd(t *testing.T) {
 
 			delivered := make(chan []byte, 1)
 			path := []directory.Node{
-				startRelay(t, ctx, aead, nil),                          // entry
-				startRelay(t, ctx, aead, nil),                          // middle
+				startRelay(t, ctx, aead, nil),                               // entry
+				startRelay(t, ctx, aead, nil),                               // middle
 				startRelay(t, ctx, aead, func(m []byte) { delivered <- m }), // exit
 			}
 
