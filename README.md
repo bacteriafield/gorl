@@ -27,7 +27,7 @@ client.Send(ctx, []byte("hello through the onion"))                         // a
 
 The root package is a small facade; the full API — every plug point — lives under
 `github.com/bacteriafield/gorl/onion/...`. Install a daemon with
-`go install github.com/bacteriafield/gorl/cmd/onionctl@latest`. Requires Go 1.24+.
+`go install github.com/bacteriafield/gorl/cmd/onionctl@latest`. Requires Go 1.25+.
 Every push to `main` publishes a new `vX.Y.Z` tag (see
 `.github/workflows/release.yml`), so `@latest` always resolves to the newest release.
 
@@ -129,5 +129,5 @@ These are v1 ceilings, marked in-code and honest about the trade-off:
 
 ## Requirements
 
-Go 1.24+ (uses `crypto/hkdf`, `crypto/ecdh`). One external dependency:
+Go 1.25+ (uses `crypto/hkdf`, `crypto/ecdh`). One external dependency:
 `golang.org/x/crypto` (ChaCha20-Poly1305 only; the AES-GCM path is stdlib-only).
