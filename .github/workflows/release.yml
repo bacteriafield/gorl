@@ -1,0 +1,65 @@
+name: release
+
+# Every push to main cuts a new release with an auto-incremented semver tag.
+# Manual runs can bump minor/major instead of patch.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: "Which version part to bump"
+        type: choice
+        options: [patch, minor, major]
+        default: patch
+
+# Needed to create tags and releases with the built-in token.
+permissions:
+  contents: write
+
+# Serialize releases so two pushes can't race to the same version.
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: stable
+          cache: true
+
+      # Gate: never release a broken build.
+      - name: Test
+        run: go test -race ./...
+
+      - name: Tag and release the next version
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BUMP: ${{ github.event.inputs.bump || 'patch' }}
+        run: |
+          set -euo pipefail
+          latest=$(git tag -l 'v*.*.*' --sort=-v:refname | head -n1)
+          if [ -z "$latest" ]; then
+            next="v0.1.0"
+          else
+            ver=${latest#v}
+            IFS=. read -r major minor patch <<< "$ver"
+            case "$BUMP" in
+              major) next="v$((major+1)).0.0" ;;
+              minor) next="v${major}.$((minor+1)).0" ;;
+              *)     next="v${major}.${minor}.$((patch+1))" ;;
+            esac
+          fi
+          echo "latest=${latest:-none}  ->  releasing ${next}"
+          gh release create "$next" \
+            --target "$GITHUB_SHA" \
+            --title "$next" \
+            --generate-notes

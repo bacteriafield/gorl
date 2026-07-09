@@ -10,6 +10,27 @@ Messages are wrapped in layers of encryption; each relay peels exactly one layer
 and learns only its immediate predecessor and successor. The sender stays
 anonymous because no single relay sees both ends.
 
+## Install
+
+```bash
+go get -u github.com/bacteriafield/gorl@latest
+```
+
+```go
+import "github.com/bacteriafield/gorl"
+
+kp, _ := gorl.GenerateKey()
+relay := gorl.NewRelay(kp, gorl.AESGCM(), gorl.TCP())                        // a relay
+client := gorl.NewClient(gorl.HTTPDirectory("http://dir:9000"), gorl.TCP(), gorl.AESGCM())
+client.Send(ctx, []byte("hello through the onion"))                         // a client
+```
+
+The root package is a small facade; the full API — every plug point — lives under
+`github.com/bacteriafield/gorl/onion/...`. Install a daemon with
+`go install github.com/bacteriafield/gorl/cmd/onionctl@latest`. Requires Go 1.24+.
+Every push to `main` publishes a new `vX.Y.Z` tag (see
+`.github/workflows/release.yml`), so `@latest` always resolves to the newest release.
+
 ## Plug points
 
 | Concern | Interface | Ships with |
