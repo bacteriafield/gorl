@@ -110,4 +110,3 @@ These are v1 ceilings, marked in-code and honest about the trade-off:
 
 Go 1.24+ (uses `crypto/hkdf`, `crypto/ecdh`). One external dependency:
 `golang.org/x/crypto` (ChaCha20-Poly1305 only; the AES-GCM path is stdlib-only).
-```
