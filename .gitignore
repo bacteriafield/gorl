@@ -31,5 +31,11 @@ go.work.sum
 .env
 
 # Editor/IDE
-# .idea/
-# .vscode/
+.idea/
+.vscode/
+
+# LLMS
+.claude/
+.codex/
+.opencode/
+.cursor/

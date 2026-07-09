@@ -44,15 +44,15 @@ onion/
 
 ```bash
 # 1. directory
-go run ./onion/cmd/dird -addr 127.0.0.1:9000 &
+go run ./cmd/dird -addr 127.0.0.1:9000 &
 
 # 2. three relays (–exit lets a relay log what it delivers when it's the exit)
-go run ./onion/cmd/relayd -dir http://127.0.0.1:9000 -exit &
-go run ./onion/cmd/relayd -dir http://127.0.0.1:9000 -exit &
-go run ./onion/cmd/relayd -dir http://127.0.0.1:9000 -exit &
+go run ./cmd/relayd -dir http://127.0.0.1:9000 -exit &
+go run ./cmd/relayd -dir http://127.0.0.1:9000 -exit &
+go run ./cmd/relayd -dir http://127.0.0.1:9000 -exit &
 
 # 3. send a message through a random 3-hop circuit
-go run ./onion/cmd/onionctl -dir http://127.0.0.1:9000 -hops 3 -msg "hello"
+go run ./cmd/onionctl -dir http://127.0.0.1:9000 -hops 3 -msg "hello"
 # → an exit relay logs: exit delivered 5 bytes: "hello"
 ```
 
