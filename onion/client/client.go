@@ -61,7 +61,7 @@ func (c *Client) Send(ctx context.Context, message []byte) error {
 	if err != nil {
 		return err
 	}
-	defer circ.Close()
+	defer func() { _ = circ.Close() }()
 	return circ.Send(message)
 }
 

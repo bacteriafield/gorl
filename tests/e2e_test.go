@@ -29,7 +29,7 @@ func startRelay(t *testing.T, ctx context.Context, aead crypto.AEAD, handler fun
 	}
 	r := relay.New(kp, aead, tr)
 	r.Handler = handler
-	go r.Serve(ctx, ln)
+	go func() { _ = r.Serve(ctx, ln) }()
 	return directory.Node{Addr: ln.Addr().String(), OnionKey: kp.Public}
 }
 
@@ -49,7 +49,7 @@ func TestEndToEnd(t *testing.T) {
 			if err != nil {
 				t.Fatalf("build circuit: %v", err)
 			}
-			defer circ.Close()
+			defer func() { _ = circ.Close() }()
 
 			msg := []byte("hello through the onion")
 			if err := circ.Send(msg); err != nil {
@@ -81,7 +81,7 @@ func TestMessageTooLarge(t *testing.T) {
 	if err != nil {
 		t.Fatalf("build circuit: %v", err)
 	}
-	defer circ.Close()
+	defer func() { _ = circ.Close() }()
 
 	oversized := make([]byte, circuit.MaxMessage(3)+1)
 	if err := circ.Send(oversized); err == nil {

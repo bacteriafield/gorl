@@ -41,7 +41,7 @@ func Build(ctx context.Context, tr transport.Transport, aead crypto.AEAD, path [
 
 	s0, err := c.createFirst(aead, path[0]) // hop 0: direct CREATE/CREATED
 	if err != nil {
-		conn.Close()
+		_ = conn.Close()
 		return nil, err
 	}
 	c.sessions = append(c.sessions, s0)
@@ -49,7 +49,7 @@ func Build(ctx context.Context, tr transport.Transport, aead crypto.AEAD, path [
 	for i := 1; i < len(path); i++ { // hops 1..n-1: RELAY EXTEND
 		si, err := c.extend(aead, i, path[i])
 		if err != nil {
-			conn.Close()
+			_ = conn.Close()
 			return nil, err
 		}
 		c.sessions = append(c.sessions, si)
