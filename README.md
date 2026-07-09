@@ -26,6 +26,7 @@ selector) is an interface away — implement the interface and pass it in.
 ## Packages
 
 ```
+cmd/           relayd (relay daemon), dird (directory), onionctl (client CLI)
 onion/
   cell/        fixed 514-byte frames + framing (pure wire format, no crypto)
   crypto/      X25519, the AEAD interface, HKDF/HMAC
@@ -36,7 +37,6 @@ onion/
   directory/   resolver (fetch nodes) + registry (nodes announce themselves)
   transport/   the single home of transport, pluggable backends
   client/       high-level: discover → select path → build → send
-  cmd/         relayd (relay daemon), dird (directory), onionctl (client CLI)
   e2e/          integration test over real TCP
 ```
 
