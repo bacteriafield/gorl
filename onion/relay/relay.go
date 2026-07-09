@@ -36,7 +36,7 @@ func (r *Relay) PublicKey() []byte { return r.pub }
 
 // Serve accepts connections until ln is closed or ctx is done.
 func (r *Relay) Serve(ctx context.Context, ln net.Listener) error {
-	go func() { <-ctx.Done(); ln.Close() }()
+	go func() { <-ctx.Done(); _ = ln.Close() }()
 	for {
 		conn, err := ln.Accept()
 		if err != nil {
@@ -57,7 +57,7 @@ type circ struct {
 const outID uint32 = 1 // one dedicated downstream conn per circuit ⇒ constant id
 
 func (r *Relay) handleConn(ctx context.Context, conn net.Conn) {
-	defer conn.Close()
+	defer func() { _ = conn.Close() }()
 	circs := map[uint32]*circ{}
 	var writeMu sync.Mutex // serializes writes to this inbound conn
 	for {
@@ -73,7 +73,7 @@ func (r *Relay) handleConn(ctx context.Context, conn net.Conn) {
 		case cell.CmdDestroy:
 			if cc := circs[c.CircID]; cc != nil && cc.outConn != nil {
 				_ = cell.Write(cc.outConn, &cell.Cell{CircID: cc.outID, Cmd: cell.CmdDestroy})
-				cc.outConn.Close()
+				_ = cc.outConn.Close()
 			}
 			delete(circs, c.CircID)
 		}
@@ -150,12 +150,12 @@ func (r *Relay) onTerminal(ctx context.Context, conn net.Conn, writeMu *sync.Mut
 		createCell := &cell.Cell{CircID: outID, Cmd: cell.CmdCreate}
 		copy(createCell.Payload[:], create)
 		if err := cell.Write(out, createCell); err != nil {
-			out.Close()
+			_ = out.Close()
 			return
 		}
 		resp, err := cell.Read(out) // synchronous CREATED, before the pump starts
 		if err != nil || resp.Cmd != cell.CmdCreated {
-			out.Close()
+			_ = out.Close()
 			return
 		}
 		extended := cell.RelayBody{

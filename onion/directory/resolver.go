@@ -49,7 +49,7 @@ func (r HTTPResolver) Nodes(ctx context.Context) ([]Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 	if resp.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("directory: list status %s", resp.Status)
 	}
@@ -75,7 +75,7 @@ func Announce(ctx context.Context, registryURL string, n Node) error {
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 	if resp.StatusCode != http.StatusNoContent {
 		return fmt.Errorf("directory: register status %s", resp.Status)
 	}
