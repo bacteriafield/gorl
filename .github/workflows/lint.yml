@@ -21,7 +21,6 @@ jobs:
           cache: false # The golangci-lint action handles its own caching
 
       - name: Run golangci-lint
-        uses: golangci/golangci-lint-action@v6
+        uses: golangci/golangci-lint-action@v8
         with:
-          # Automatically detects .golangci.yml at the repository root
-          version: v1.61.0  # or another version built with Go 1.25+
+          version: v2.12.2
